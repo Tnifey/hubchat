@@ -113,8 +113,10 @@ component<{}>(() => {
         const reader = chat.body?.getReader();
         const decoder = new TextDecoder();
 
+        let chunks = 0;
+
         reader.read().then(function processText({ done, value }) {
-            if (done) {
+            if (done || chunks++ > 2000) {
                 setAtomValue($responses, (current) => [...current, {
                     uuid: nanoid(20),
                     role: 'assistant',
@@ -126,6 +128,7 @@ component<{}>(() => {
                 inputRef?.focus();
                 return console.log('Stream complete');
             }
+
             const string = decoder.decode(value, { stream: true });
             const data = JSON.parse(string);
             setContent((current) => `${current}${data?.message?.content}`);
