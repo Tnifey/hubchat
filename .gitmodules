@@ -1,0 +1,3 @@
+[submodule "packages/maki"]
+	path = packages/maki
+	url = git@github.com:Tnifey/maki.git

@@ -1,0 +1,14 @@
+{
+    "name": "hubchat",
+    "private": true,
+    "version": "0.0.1",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "yarn workspace @hub/chat dev",
+        "build": "yarn workspace @hub/chat build",
+        "maki:dev": "yarn workspace maki dev",
+        "maki:build": "yarn workspace maki build"
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@hub/chat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "rspack dev",
+    "build": "rspack build"
+  },
+  "dependencies": {
+    "@polymer/iron-autogrow-textarea": "^3.0.3",
+    "nanoid": "^5.0.6",
+    "zero-md": "^2.5.3",
+    "maki": "*"
+  },
+  "devDependencies": {
+    "@rspack/cli": "^0.5.4",
+    "@rspack/core": "^0.5.4",
+    "@types/node": "^18",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
