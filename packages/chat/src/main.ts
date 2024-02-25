@@ -19,8 +19,8 @@ const $responses = persistentAtom<{
 
 component<{}>(() => {
     return () => html`
-        <div class="grid w-full m-0 p-0" style="min-height: 100dvh; grid-template-rows: auto 1fr;">
-            <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30" style="background: #121212">
+        <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">
+            <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30 bg-[#121212]">
                 <div class="mr-auto my-auto font-bold">HubChat</div>
                 <app-select-role></app-select-role>
                 <app-select-model></app-select-model>
@@ -35,7 +35,7 @@ component(() => {
     const [model, setModel] = use($model);
     return () => html`
         <select
-            class="px-2 py-2 rounded text-white"
+            class="p-2 rounded"
             .value=${model()}
             @change=${(e: Event) => setModel((e.target as HTMLSelectElement).value)}>
             ${repeat(models(), x => x, (name) => html`
@@ -50,7 +50,7 @@ component(() => {
     const [role, setRole] = use($role);
     return () => html`
         <select
-            class="px-2 py-2 rounded text-white"
+            class="p-2 rounded"
             .value=${role()}
             @change=${(e: Event) => setRole((e.target as HTMLSelectElement).value)}>
             ${repeat(roles, x => x, (name) => html`
@@ -145,13 +145,13 @@ component<{}>(() => {
     };
 
     return () => html`
-        <div class="grid" style="grid-template-rows: 1fr auto; min-height: 100%;">
-            <app-model-responses class=${tw('p-4')}>
+        <div class=${tw`grid min-h-full grid-template-rows-[1fr,auto]`} style="grid-template-rows: 1fr auto;">
+            <app-model-responses class="p-4">
                 ${content() ? html`<app-model-response role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>
                     <zero-markdown content=${content()}></zero-markdown>
                 </app-model-response>` : nothing}
             </app-model-responses>
-            <form class="flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30" @submit=${onSubmit} style="background: #121212">
+            <form class="flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30 bg-[#121212]" @submit=${onSubmit}>
                 <iron-autogrow-textarea type="text"
                     class="p-1 rounded w-full border-r-1 border-r-black border-r-opacity-30"
                     @input=${updatePrompt}
@@ -178,7 +178,7 @@ component<{}>(() => {
                 </label>
                 <button type="submit"
                     title="Send"
-                    class="py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10"
+                    class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:(opacity-10 cursor-progress)")}
                     .disabled=${isGenerating()}>
                     <span>▶</span>
                 </button>
@@ -208,7 +208,7 @@ component<{ role: string; }>(() => {
         </div>`;
 
         return html`
-            <div class=${tw("host:inline-block p-4 rounded-lg shadow max-w-prose bg-white", role === 'user' ? 'ml-auto bg-opacity-5' : 'bg-opacity-10 mr-auto')} style="width: fit-content;">
+            <div class=${tw("host:inline-block p-4 rounded-lg shadow max-w-prose bg-white w-[fit-content]", role === 'user' ? 'ml-auto bg-opacity-5' : 'bg-opacity-10 mr-auto')}>
                 <slot></slot>
             </div>
         `;
