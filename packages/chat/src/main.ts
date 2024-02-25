@@ -116,7 +116,7 @@ component<{}>(() => {
         let chunks = 0;
 
         reader.read().then(function processText({ done, value }) {
-            if (done || chunks++ > 2000) {
+            if (done || chunks++ > 5000) {
                 setAtomValue($responses, (current) => [...current, {
                     uuid: nanoid(20),
                     role: 'assistant',
