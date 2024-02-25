@@ -19,9 +19,9 @@ const $responses = persistentAtom<{
 
 component<{}>(() => {
     return () => html`
-        <div class=${tw("grid w-full m-0 p-0")} style="min-height: 100dvh; grid-template-rows: auto 1fr;">
-            <div class=${tw('top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30')} style="background: #121212">
-                <div class=${tw("mr-auto my-auto font-bold")}>HubChat</div>
+        <div class="grid w-full m-0 p-0" style="min-height: 100dvh; grid-template-rows: auto 1fr;">
+            <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30" style="background: #121212">
+                <div class="mr-auto my-auto font-bold">HubChat</div>
                 <app-select-role></app-select-role>
                 <app-select-model></app-select-model>
             </div>
@@ -35,7 +35,7 @@ component(() => {
     const [model, setModel] = use($model);
     return () => html`
         <select
-            class=${tw("px-2 py-2 rounded text-white")}
+            class="px-2 py-2 rounded text-white"
             .value=${model()}
             @change=${(e: Event) => setModel((e.target as HTMLSelectElement).value)}>
             ${repeat(models(), x => x, (name) => html`
@@ -50,7 +50,7 @@ component(() => {
     const [role, setRole] = use($role);
     return () => html`
         <select
-            class=${tw("px-2 py-2 rounded text-white")}
+            class="px-2 py-2 rounded text-white"
             .value=${role()}
             @change=${(e: Event) => setRole((e.target as HTMLSelectElement).value)}>
             ${repeat(roles, x => x, (name) => html`
@@ -145,15 +145,15 @@ component<{}>(() => {
     };
 
     return () => html`
-        <div class=${tw("grid")} style="grid-template-rows: 1fr auto; min-height: 100%;">
+        <div class="grid" style="grid-template-rows: 1fr auto; min-height: 100%;">
             <app-model-responses class=${tw('p-4')}>
                 ${content() ? html`<app-model-response role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>
                     <zero-markdown content=${content()}></zero-markdown>
                 </app-model-response>` : nothing}
             </app-model-responses>
-            <form class=${tw("flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30")} @submit=${onSubmit} style="background: #121212">
+            <form class="flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30" @submit=${onSubmit} style="background: #121212">
                 <iron-autogrow-textarea type="text"
-                    class=${tw("p-1 rounded w-full border-r-1 border-r-black border-r-opacity-30")}
+                    class="p-1 rounded w-full border-r-1 border-r-black border-r-opacity-30"
                     @input=${updatePrompt}
                     @keyup=${keyup}
                     .value=${prompt()}
@@ -163,22 +163,22 @@ component<{}>(() => {
                 <slot></slot>
                 <button type="button"
                     title="clear"
-                    class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10")}
+                    class="py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10"
                     @click=${() => setAtomValue($responses, () => [])}>
                     ✖
                 </button>
-                <label class=${tw("p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative")}
+                <label class="p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative"
                     title="Add images"
                     for="images">
                     <input type="file"
                         multiple
-                        class=${tw("p-1 rounded w-18 absolute top-0 left-0 right-0 bottom-0 opacity-0")}
+                        class="p-1 rounded w-18 absolute top-0 left-0 right-0 bottom-0 opacity-0"
                         @change=${imagesChange} />
                     <span>📌</span>
                 </label>
                 <button type="submit"
                     title="Send"
-                    class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10")}
+                    class="py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10"
                     .disabled=${isGenerating()}>
                     <span>▶</span>
                 </button>
@@ -190,7 +190,7 @@ component<{}>(() => {
 component<{}>(() => {
     const [responses] = use($responses);
     return () => html`
-        <div class=${tw("flex flex-col gap-4 overflow-auto")}>
+        <div class="flex flex-col gap-4 overflow-auto">
             ${repeat(responses(), x => x.uuid, (response) => html`
                 <app-model-response role=${response.role}>
                     <zero-markdown content=${response.content}></zero-markdown>
@@ -203,7 +203,7 @@ component<{}>(() => {
 
 component<{ role: string; }>(() => {
     return ({ role }) => {
-        if (role === 'system') return html`<div class=${tw("w-full text-sm text-center py-4 text-white text-opacity-60")}>
+        if (role === 'system') return html`<div class="w-full text-sm text-center py-4 text-white text-opacity-60">
             <slot></slot>
         </div>`;
 
