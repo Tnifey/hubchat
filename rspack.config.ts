@@ -29,11 +29,11 @@ export default defineConfig({
     module: {
         rules: [
             {
-                exclude: /node_modules/,
+                exclude: '/node_modules\/(?!maki\/src).*/',
                 oneOf: [
                     {
-                        test: /\.(t|j)sx?$/,
-                        exclude: /node_modules/,
+                        test: /\.(t|j)s?$/,
+                        exclude: '/node_modules\/(?!maki\/src).*/',
                         use: {
                             loader: 'builtin:swc-loader',
                             options: {

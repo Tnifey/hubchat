@@ -2,13 +2,21 @@
     "name": "hubchat",
     "private": true,
     "version": "0.0.1",
-    "workspaces": [
-        "packages/*"
-    ],
     "scripts": {
-        "dev": "yarn workspace @hub/chat dev",
-        "build": "yarn workspace @hub/chat build",
-        "maki:dev": "yarn workspace maki dev",
-        "maki:build": "yarn workspace maki build"
+        "dev": "rspack dev",
+        "build": "rspack build"
+    },
+    "dependencies": {
+        "@polymer/iron-autogrow-textarea": "^3.0.3",
+        "nanoid": "^5.0.6",
+        "zero-md": "^2.5.3",
+        "maki": "git+https://github.com/tnifey/maki.git#main"
+    },
+    "devDependencies": {
+        "@rspack/cli": "^0.5.4",
+        "@rspack/core": "^0.5.4",
+        "@types/node": "^18",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
     }
 }
