@@ -1,5 +1,7 @@
-import { html, component, use, tw, setAtomValue, nothing, repeat, atom, getAtomValue, persistentAtom, ref } from 'maki';
+import { html, component, use, tw, setAtomValue, atom, getAtomValue, persistentAtom } from 'maki';
 import { nanoid } from 'nanoid';
+import { repeat } from 'lit-html/directives/repeat.js';
+import { ref } from 'lit-html/directives/ref.js';
 import "zero-md";
 import '@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js';
 
@@ -31,13 +33,13 @@ component<{}>(() => {
 }).as('app-root');
 
 component(() => {
-    const [models] = use($models);
-    const [model, setModel] = use($model);
+    const models = use($models);
+    const model = use($model);
     return () => html`
         <select
             class="p-2 rounded"
             .value=${model()}
-            @change=${(e: Event) => setModel((e.target as HTMLSelectElement).value)}>
+            @change=${(e: Event) => model((e.target as HTMLSelectElement).value)}>
             ${repeat(models(), x => x, (name) => html`
                 <option value=${name} ?selected=${name === model()}>${name}</option>
             `)}
@@ -47,12 +49,12 @@ component(() => {
 
 component(() => {
     const roles = ['user', 'assistant', 'system'];
-    const [role, setRole] = use($role);
+    const role = use($role);
     return () => html`
         <select
             class="p-2 rounded"
             .value=${role()}
-            @change=${(e: Event) => setRole((e.target as HTMLSelectElement).value)}>
+            @change=${(e: Event) => role((e.target as HTMLSelectElement).value)}>
             ${repeat(roles, x => x, (name) => html`
                 <option value=${name} ?selected=${name === role()}>${name}</option>
             `)}
@@ -63,20 +65,20 @@ component(() => {
 component<{}>(() => {
     let recent: HTMLElement = null;
     let inputRef: HTMLElement = null;
-    const [isGenerating, setIsGenerating] = use(false);
-    const [prompt, setPrompt] = use("");
-    const [promptImages, setPromptImages] = use<string[]>([]);
-    const [content, setContent] = use<any>("");
+    const isGenerating = use(false);
+    const prompt = use("");
+    const promptImages = use<string[]>([]);
+    const content = use<any>("");
 
     async function updatePrompt(e: MakiInputEvent<HTMLInputElement>) {
-        return setPrompt(e.target.value);
+        return prompt(e.target.value);
     }
 
     function imagesChange(e: MakiInputEvent<HTMLInputElement>) {
-        setPromptImages([]);
+        promptImages([]);
         if (!e.target.files) return console.log('no files');
         const reader = new FileReader();
-        reader.addEventListener('load', (e) => setPromptImages((current) => [...current, e.target?.result?.toString().split(',')[1]]));
+        reader.addEventListener('load', (e) => promptImages((current) => [...current, e.target?.result?.toString().split(',')[1]]));
         for (let file of Array.from(e.target.files)) {
             reader.readAsDataURL(file);
         }
@@ -90,9 +92,9 @@ component<{}>(() => {
             role: getAtomValue($role),
             content: prompt(),
         }]);
-        setPrompt('');
-        setContent('');
-        setIsGenerating(true);
+        prompt('');
+        content('');
+        isGenerating(true);
 
         const hasPrompt = prompt() && prompt().trim().length > 0;
 
@@ -122,8 +124,8 @@ component<{}>(() => {
                     role: 'assistant',
                     content: content(),
                 }]);
-                setContent('');
-                setIsGenerating(false);
+                content('');
+                isGenerating(false);
                 recent && window.scrollTo({ top: recent.offsetTop });
                 inputRef?.focus();
                 return console.log('Stream complete');
@@ -131,12 +133,12 @@ component<{}>(() => {
 
             const string = decoder.decode(value, { stream: true });
             const data = JSON.parse(string);
-            setContent((current) => `${current}${data?.message?.content}`);
+            content((current) => `${current}${data?.message?.content}`);
 
             recent && window.scrollTo({ top: recent.offsetTop });
             return reader.read().then(processText);
         });
-        setPrompt('');
+        prompt('');
         if (!chat.ok) throw new Error(chat.statusText);
     }
 
@@ -149,7 +151,7 @@ component<{}>(() => {
             <app-model-responses class="p-4">
                 ${content() ? html`<app-model-response role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>
                     <zero-markdown content=${content()}></zero-markdown>
-                </app-model-response>` : nothing}
+                </app-model-response>` : null}
             </app-model-responses>
             <form class="flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30 bg-[#121212]" @submit=${onSubmit}>
                 <iron-autogrow-textarea type="text"
@@ -188,7 +190,7 @@ component<{}>(() => {
 }).as('app-chat');
 
 component<{}>(() => {
-    const [responses] = use($responses);
+    const responses = use($responses);
     return () => html`
         <div class="flex flex-col gap-4 overflow-auto">
             ${repeat(responses(), x => x.uuid, (response) => html`
