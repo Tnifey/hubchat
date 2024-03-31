@@ -1,29 +1,30 @@
-import { html, component, use, tw, setAtomValue, atom, getAtomValue, persistentAtom } from 'maki';
+import { html, component, use, tw, persistentAtom, isotope } from 'maki';
 import { nanoid } from 'nanoid';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { ref } from 'lit-html/directives/ref.js';
 import "zero-md";
 import '@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js';
 
-const $models = atom<any[]>([]);
-const $model = persistentAtom('model', 'mistral:latest');
-const $role = persistentAtom('role', 'user');
+const $models = isotope<any[]>([]);
+const $model = isotope(persistentAtom('model', 'mistral:latest'));
+const $role = isotope(persistentAtom('role', 'user'));
+
 fetch('http://localhost:11434/api/tags')
     .then((response) => response.json())
-    .then((data) => setAtomValue($models, data?.models?.map(({ name }) => name)))
+    .then((data) => $models(data?.models?.map(({ name }) => name)))
     .catch(console.error);
 
-const $responses = persistentAtom<{
+const $responses = isotope(persistentAtom<{
     uuid: string;
     role: string;
     content: string;
-}[]>('generated-responses', []);
+}[]>('generated-responses', []));
 
 component<{}>(() => {
     return () => html`
         <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">
             <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30 bg-[#121212]">
-                <div class="mr-auto my-auto font-bold">HubChat</div>
+                <div class="mr-auto my-auto font-bold">🗣HubChat</div>
                 <app-select-role></app-select-role>
                 <app-select-model></app-select-model>
             </div>
@@ -87,9 +88,9 @@ component<{}>(() => {
     async function onSubmit(e: Event) {
         e.preventDefault();
         if (isGenerating()) return console.log('already generating');
-        setAtomValue($responses, (current) => [...current, {
+        $responses((current) => [...current, {
             uuid: nanoid(20),
-            role: getAtomValue($role),
+            role: $role(),
             content: prompt(),
         }]);
         prompt('');
@@ -101,11 +102,11 @@ component<{}>(() => {
         const chat = await fetch('http://localhost:11434/api/chat', {
             method: 'post',
             body: JSON.stringify({
-                model: getAtomValue($model),
+                model: $model(),
                 messages: [
-                    ...getAtomValue($responses).map(({ role, content }) => ({ role, content })),
+                    ...$responses().map(({ role, content }) => ({ role, content })),
                     hasPrompt && {
-                        role: getAtomValue($role),
+                        role: $role(),
                         content: prompt(),
                         images: promptImages(),
                     },
@@ -119,7 +120,7 @@ component<{}>(() => {
 
         reader.read().then(function processText({ done, value }) {
             if (done || chunks++ > 5000) {
-                setAtomValue($responses, (current) => [...current, {
+                $responses((current) => [...current, {
                     uuid: nanoid(20),
                     role: 'assistant',
                     content: content(),
@@ -149,7 +150,7 @@ component<{}>(() => {
     return () => html`
         <div class=${tw`grid min-h-full grid-template-rows-[1fr,auto]`} style="grid-template-rows: 1fr auto;">
             <app-model-responses class="p-4">
-                ${content() ? html`<app-model-response role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>
+                ${content() ? html`<app-model-response data-role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>
                     <zero-markdown content=${content()}></zero-markdown>
                 </app-model-response>` : null}
             </app-model-responses>
@@ -166,10 +167,10 @@ component<{}>(() => {
                 <button type="button"
                     title="clear"
                     class="py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10"
-                    @click=${() => setAtomValue($responses, () => [])}>
+                    @click=${() => $responses(() => [])}>
                     ✖
                 </button>
-                <label class="p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative"
+                <!-- <label class="p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative"
                     title="Add images"
                     for="images">
                     <input type="file"
@@ -177,7 +178,7 @@ component<{}>(() => {
                         class="p-1 rounded w-18 absolute top-0 left-0 right-0 bottom-0 opacity-0"
                         @change=${imagesChange} />
                     <span>📌</span>
-                </label>
+                </label> -->
                 <button type="submit"
                     title="Send"
                     class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:(opacity-10 cursor-progress)")}
@@ -194,7 +195,7 @@ component<{}>(() => {
     return () => html`
         <div class="flex flex-col gap-4 overflow-auto">
             ${repeat(responses(), x => x.uuid, (response) => html`
-                <app-model-response role=${response.role}>
+                <app-model-response data-role=${response.role}>
                     <zero-markdown content=${response.content}></zero-markdown>
                 </app-model-response>
             `)}
@@ -203,8 +204,8 @@ component<{}>(() => {
     `;
 }).as('app-model-responses');
 
-component<{ role: string; }>(() => {
-    return ({ role }) => {
+component<{ 'data-role': string; }>(() => {
+    return ({ 'data-role': role }) => {
         if (role === 'system') return html`<div class="w-full text-sm text-center py-4 text-white text-opacity-60">
             <slot></slot>
         </div>`;
