@@ -1,67 +1,28 @@
-import { html, component, use, tw, persistentAtom, isotope } from 'maki';
+import { html, component, use, tw } from 'maki';
 import { nanoid } from 'nanoid';
-import { repeat } from 'lit-html/directives/repeat.js';
 import { ref } from 'lit-html/directives/ref.js';
-import "zero-md";
 import '@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js';
 
-const $models = isotope<any[]>([]);
-const $model = isotope(persistentAtom('model', 'mistral:latest'));
-const $role = isotope(persistentAtom('role', 'user'));
+import { $model, $responses, $role } from './state';
 
-fetch('http://localhost:11434/api/tags')
-    .then((response) => response.json())
-    .then((data) => $models(data?.models?.map(({ name }) => name)))
-    .catch(console.error);
-
-const $responses = isotope(persistentAtom<{
-    uuid: string;
-    role: string;
-    content: string;
-}[]>('generated-responses', []));
+import "./app-select-role";
+import "./app-select-model";
+import "./app-model-responses";
 
 component<{}>(() => {
-    return () => html`
-        <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">
-            <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30 bg-[#121212]">
-                <div class="mr-auto my-auto font-bold">🗣HubChat</div>
-                <app-select-role></app-select-role>
-                <app-select-model></app-select-model>
+    return () => {
+        return html`
+            <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">
+                <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30 bg-[#121212]">
+                    <div class="mr-auto my-auto font-bold">🗣HubChat</div>
+                    <app-select-role></app-select-role>
+                    <app-select-model></app-select-model>
+                </div>
+                <app-chat></app-chat>
             </div>
-            <app-chat></app-chat>
-        </div>
-    `;
+        `;
+    };
 }).as('app-root');
-
-component(() => {
-    const models = use($models);
-    const model = use($model);
-    return () => html`
-        <select
-            class="p-2 rounded"
-            .value=${model()}
-            @change=${(e: Event) => model((e.target as HTMLSelectElement).value)}>
-            ${repeat(models(), x => x, (name) => html`
-                <option value=${name} ?selected=${name === model()}>${name}</option>
-            `)}
-        </select>
-    `;
-}).as('app-select-model');
-
-component(() => {
-    const roles = ['user', 'assistant', 'system'];
-    const role = use($role);
-    return () => html`
-        <select
-            class="p-2 rounded"
-            .value=${role()}
-            @change=${(e: Event) => role((e.target as HTMLSelectElement).value)}>
-            ${repeat(roles, x => x, (name) => html`
-                <option value=${name} ?selected=${name === role()}>${name}</option>
-            `)}
-        </select>
-    `;
-}).as('app-select-role');
 
 component<{}>(() => {
     let recent: HTMLElement = null;
@@ -190,51 +151,7 @@ component<{}>(() => {
     `;
 }).as('app-chat');
 
-component<{}>(() => {
-    const responses = use($responses);
-    return () => html`
-        <div class="flex flex-col gap-4 overflow-auto">
-            ${repeat(responses(), x => x.uuid, (response) => html`
-                <app-model-response data-role=${response.role}>
-                    <zero-markdown content=${response.content}></zero-markdown>
-                </app-model-response>
-            `)}
-            <slot></slot>
-        </div>
-    `;
-}).as('app-model-responses');
 
-component<{ 'data-role': string; }>(() => {
-    return ({ 'data-role': role }) => {
-        if (role === 'system') return html`<div class="w-full text-sm text-center py-4 text-white text-opacity-60">
-            <slot></slot>
-        </div>`;
-
-        return html`
-            <div class=${tw("host:inline-block p-4 rounded-lg shadow max-w-prose bg-white w-[fit-content]", role === 'user' ? 'ml-auto bg-opacity-5' : 'bg-opacity-10 mr-auto')}>
-                <slot></slot>
-            </div>
-        `;
-    };
-}).as('app-model-response');
-
-component<{ content: string; }>(() => {
-    return ({ content }) => html`
-        <zero-md>
-            <template>
-                <style>
-                    :host: { display: contents; max-width: 100%; background: transparent; }
-                    p { margin-top: 0; margin-bottom: 1em; }
-                    ul, ol { padding-left: 1em; }
-                    pre, code { white-space: pre-wrap; padding: 0.5em; background: #212121; color: white; }
-                    :first-child { margin-top: 0; }
-                    :last-child { margin-bottom: 0; }
-                </style>
-            </template>
-            <script type="text/markdown">${content}</script>
-        </zero-md>
-    `;
-}).as('zero-markdown');
 
 interface MakiInputEvent<T> extends InputEvent {
     target: T & EventTarget;
