@@ -1,6 +1,6 @@
 # hubchat
 
-A simple client for [ollama](https://github.com/ollama/ollama).
+A simple chat client for [ollama](https://github.com/ollama/ollama).
 
 ### How to run:
 - node 18+ (use nvm or nvm-windows)
