@@ -1,23 +1,33 @@
+export type ModelOptions = {
+    num_ctx: number;
+    repeat_last_n: number;
+}
+
 export type ChatMessage = {
     role: string;
     content: string;
     images?: string[];
 };
 
-export type ChatOptions = {
+export type ChatConfig = {
     endpoint?: string;
     model: string;
     messages?: ChatMessage[],
     onChunk?: (chunk: string) => any;
+    options?: ModelOptions;
 };
 
-export async function streamChat(options: ChatOptions): Promise<ChatMessage> {
+export async function streamChat(config: ChatConfig): Promise<ChatMessage> {
     const {
         endpoint = 'http://localhost:11434/api/chat',
         model,
         messages = [],
+        options = {
+            num_ctx: 4096,
+            repeat_last_n: -1,
+        },
         onChunk = () => { },
-    } = options;
+    } = config;
 
     const chat = await fetch(endpoint, {
         method: 'post',
@@ -27,6 +37,7 @@ export async function streamChat(options: ChatOptions): Promise<ChatMessage> {
             options: {
                 num_ctx: 4096,
                 repeat_last_n: -1,
+                ...options,
             },
         }),
     });
