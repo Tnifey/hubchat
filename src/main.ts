@@ -8,6 +8,7 @@ import { $model, $responses, $role } from './state';
 import "./app-select-role";
 import "./app-select-model";
 import "./app-model-responses";
+import { streamChat } from './chat';
 
 component<{}>(() => {
     return () => {
@@ -52,56 +53,36 @@ component<{}>(() => {
         $responses((current) => [...current, {
             uuid: nanoid(20),
             role: $role(),
-            content: prompt(),
+            content: prompt().trim(),
+            images: promptImages(),
         }]);
         prompt('');
+        if ($role() !== 'user') return;
         content('');
+        promptImages([]);
         isGenerating(true);
 
-        const hasPrompt = prompt() && prompt().trim().length > 0;
-
-        const chat = await fetch('http://localhost:11434/api/chat', {
-            method: 'post',
-            body: JSON.stringify({
+        try {
+            const message = await streamChat({
                 model: $model(),
-                messages: [
-                    ...$responses().map(({ role, content }) => ({ role, content })),
-                    hasPrompt && {
-                        role: $role(),
-                        content: prompt(),
-                        images: promptImages(),
-                    },
-                ].filter(Boolean),
-            }),
-        });
-        const reader = chat.body?.getReader();
-        const decoder = new TextDecoder();
+                messages: $responses().map(({ role, content }) => ({ role, content })),
+                onChunk(chunk) {
+                    content((current) => `${current}${chunk}`);
+                    recent && window.scrollTo({
+                        top: recent.offsetTop + recent.offsetHeight,
+                    });
+                },
+            });
+            message?.content?.trim() && $responses((current) => [...current, {
+                uuid: nanoid(20),
+                ...message,
+            }]);
+        } catch { }
 
-        let chunks = 0;
-
-        reader.read().then(function processText({ done, value }) {
-            if (done || chunks++ > 5000) {
-                $responses((current) => [...current, {
-                    uuid: nanoid(20),
-                    role: 'assistant',
-                    content: content(),
-                }]);
-                content('');
-                isGenerating(false);
-                recent && window.scrollTo({ top: recent.offsetTop });
-                inputRef?.focus();
-                return console.log('Stream complete');
-            }
-
-            const string = decoder.decode(value, { stream: true });
-            const data = JSON.parse(string);
-            content((current) => `${current}${data?.message?.content}`);
-
-            recent && window.scrollTo({ top: recent.offsetTop });
-            return reader.read().then(processText);
-        });
-        prompt('');
-        if (!chat.ok) throw new Error(chat.statusText);
+        content(() => '');
+        isGenerating(() => false);
+        recent && window.scrollTo({ top: recent.offsetTop + recent.offsetHeight });
+        inputRef?.focus();
     }
 
     const keyup = (e: KeyboardEvent) => {
