@@ -1,3 +1,5 @@
+import { $api } from "./state";
+
 export type ModelOptions = {
     num_ctx: number;
     repeat_last_n: number;
@@ -19,7 +21,7 @@ export type ChatConfig = {
 
 export async function streamChat(config: ChatConfig): Promise<ChatMessage> {
     const {
-        endpoint = "http://localhost:11434/api/chat",
+        endpoint = `${$api()}/chat`,
         model,
         messages = [],
         options = {

@@ -1,4 +1,8 @@
 import { component, html, tw, use } from "maki";
+import { $api } from "./state";
+
+import "./app-select-model";
+import "./app-select-role";
 
 component(() => {
     const isOpen = use(true);
@@ -23,13 +27,25 @@ component(($) => {
                 <h4 class="mr-auto px-2">
                     ⚙ Settings
                 </h4>
-                <button class="hover:bg-white hover:bg-opacity-5 p-2 leading-4 rounded-md" @click=${onClose}
+                <button class="hover:bg-white hover:bg-opacity-5 p-2 leading-4 rounded-md"
+                    @click=${onClose}
                     type="button">
                     ✖
                 </button>
             </header>
             <div class="flex gap-2 flex-col px-4 pt-2 pb-6">
-                <app-text-input label="something" placeholder="thing"></app-text-input>
+                <app-form-field label="ollama endpoint">
+                    <app-text-input
+                        placeholder="http://localhost:11434/api"
+                        value=${$api()}
+                        @change=${console.log}></app-text-input>
+                </app-form-field>
+                <app-form-field label="model">
+                    <app-select-model></app-select-model>
+                </app-form-field>
+                <app-form-field label="role">
+                    <app-select-role></app-select-role>
+                </app-form-field>
             </div>
         </div>
     `;
@@ -37,9 +53,19 @@ component(($) => {
 
 component(($) => {
     return () => html`
-        <label class="text-xs">
-            <span>${$.getAttribute('label')}</span>
-            <input type="text" class="p-2 rounded w-full border-r-1 border-r-black border-r-opacity-30" placeholder=${$.getAttribute('placeholder')} />
-        </label>
+        <input type="text"
+            class="p-2 rounded w-full border-r-1 border-r-black border-r-opacity-30"
+            placeholder=${$.getAttribute('placeholder')}
+            value=${$.getAttribute('value')}
+        />
     `;
 }).as('app-text-input');
+
+component($ => {
+    return () => html`
+        <label class="text-xs flex flex-col gap-1">
+            <span>${$.getAttribute('label')}</span>
+            <slot></slot>
+        </label>
+    `;
+}).as('app-form-field');

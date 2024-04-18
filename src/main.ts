@@ -3,15 +3,15 @@ import { ref } from "lit-html/directives/ref.js";
 import { component, html, tw, use } from "maki";
 import { nanoid } from "nanoid";
 
-import { $model, $responses, $role } from "./state";
+import { $api, $model, $responses, $role } from "./state";
 
 import "./app-model-responses";
-import "./app-select-model";
-import "./app-select-role";
+
 import "./app-settings";
 import { streamChat } from "./chat";
 
 component(() => {
+    const api = use($api)
     return () => {
         return html`
             <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">
