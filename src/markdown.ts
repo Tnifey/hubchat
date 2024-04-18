@@ -1,7 +1,7 @@
 import { component, html } from "maki";
 import "zero-md";
 
-component<{ content: string; }>(() => {
+component<{ content: string }>(() => {
     return ({ content }) => html`
         <zero-md>
             <template>
@@ -17,4 +17,4 @@ component<{ content: string; }>(() => {
             <script type="text/markdown">${content}</script>
         </zero-md>
     `;
-}).as('zero-markdown');
+}).as("zero-markdown");

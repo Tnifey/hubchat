@@ -1,5 +1,5 @@
+import { repeat } from "lit-html/directives/repeat.js";
 import { component, html, use } from "maki";
-import { repeat } from 'lit-html/directives/repeat.js';
 import { $model, $models } from "./state";
 
 component(() => {
@@ -10,9 +10,13 @@ component(() => {
             class="p-2 rounded"
             .value=${model()}
             @change=${(e: Event) => model((e.target as HTMLSelectElement).value)}>
-            ${repeat(models(), x => x, (name) => html`
+            ${repeat(
+                models(),
+                (x) => x,
+                (name) => html`
                 <option value=${name} ?selected=${name === model()}>${name}</option>
-            `)}
+            `,
+            )}
         </select>
     `;
-}).as('app-select-model');
+}).as("app-select-model");
