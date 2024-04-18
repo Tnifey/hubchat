@@ -8,6 +8,7 @@ import { $model, $responses, $role } from "./state";
 import "./app-model-responses";
 import "./app-select-model";
 import "./app-select-role";
+import "./app-settings";
 import { streamChat } from "./chat";
 
 component(() => {
@@ -18,6 +19,7 @@ component(() => {
                     <div class="mr-auto my-auto font-bold">🗣HubChat</div>
                     <app-select-role></app-select-role>
                     <app-select-model></app-select-model>
+                    <!-- <app-settings></app-settings> -->
                 </div>
                 <app-chat></app-chat>
             </div>
