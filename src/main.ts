@@ -9,6 +9,7 @@ import "./app-select-role";
 import "./app-select-model";
 import "./app-model-responses";
 import "./app-settings";
+import "./app-speak";
 import { streamChat } from "./chat";
 
 component(() => {
@@ -18,6 +19,7 @@ component(() => {
             <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">
                 <div class="top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30 bg-[#121212]">
                     <div class="mr-auto my-auto font-bold">🗣HubChat</div>
+                    <!-- <app-speak></app-speak> -->
                     <app-select-role></app-select-role>
                     <app-select-model></app-select-model>
                     <app-settings></app-settings>
