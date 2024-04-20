@@ -1,11 +1,10 @@
 import { component, html, tw, use } from "maki";
 import { $api } from "./state";
 
-import "./app-select-model";
-import "./app-select-role";
+import "./app-model-settings";
 
 component(() => {
-    const isOpen = use(true);
+    const isOpen = use(false);
     return () => html`
         <div class="relative inline-flex items-center justify-center h-full">
             <button type="button" class="p-2 leading-4 rounded-md hover:bg-white hover:bg-opacity-5" @click=${() => isOpen(x => !x)}>
@@ -22,8 +21,8 @@ component(($) => {
     }
 
     return () => html`
-        <div class=${tw`absolute top-0 right-0 bg-black z-[99999] rounded-md min-w-[320px] border-solid border-1 border-white border-opacity-20`}>
-            <header class="flex gap-4 p-2 items-center border-b-solid border-b-1 border-white border-b-opacity-20">
+        <div class=${tw`absolute top-0 right-0 bg-black z-[99999] rounded-md min-w-[320px] max-h-[80dvh] border-solid border-1 border-white border-opacity-20 overflow-y-auto`}>
+            <header class="flex gap-4 p-2 items-center border-b-solid border-b-1 border-white border-b-opacity-20 sticky top-0 left-0 right-0 bg-black">
                 <h4 class="mr-auto px-2">
                     ⚙ Settings
                 </h4>
@@ -38,34 +37,10 @@ component(($) => {
                     <app-text-input
                         placeholder="http://localhost:11434/api"
                         value=${$api()}
-                        @change=${console.log}></app-text-input>
+                        @change=${(e) => $api(() => e.target.value.trim())}></app-text-input>
                 </app-form-field>
-                <app-form-field label="model">
-                    <app-select-model></app-select-model>
-                </app-form-field>
-                <app-form-field label="role">
-                    <app-select-role></app-select-role>
-                </app-form-field>
+                <app-model-settings></app-model-settings>
             </div>
         </div>
     `;
 }).as('app-settings-modal');
-
-component(($) => {
-    return () => html`
-        <input type="text"
-            class="p-2 rounded w-full border-r-1 border-r-black border-r-opacity-30"
-            placeholder=${$.getAttribute('placeholder')}
-            value=${$.getAttribute('value')}
-        />
-    `;
-}).as('app-text-input');
-
-component($ => {
-    return () => html`
-        <label class="text-xs flex flex-col gap-1">
-            <span>${$.getAttribute('label')}</span>
-            <slot></slot>
-        </label>
-    `;
-}).as('app-form-field');

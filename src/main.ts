@@ -2,11 +2,12 @@ import "@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js";
 import { ref } from "lit-html/directives/ref.js";
 import { component, html, tw, use } from "maki";
 import { nanoid } from "nanoid";
-
 import { $api, $model, $responses, $role } from "./state";
 
+import "./app-form";
+import "./app-select-role";
+import "./app-select-model";
 import "./app-model-responses";
-
 import "./app-settings";
 import { streamChat } from "./chat";
 
@@ -19,7 +20,7 @@ component(() => {
                     <div class="mr-auto my-auto font-bold">🗣HubChat</div>
                     <app-select-role></app-select-role>
                     <app-select-model></app-select-model>
-                    <!-- <app-settings></app-settings> -->
+                    <app-settings></app-settings>
                 </div>
                 <app-chat></app-chat>
             </div>

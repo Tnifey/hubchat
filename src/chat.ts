@@ -1,9 +1,4 @@
-import { $api } from "./state";
-
-export type ModelOptions = {
-    num_ctx: number;
-    repeat_last_n: number;
-};
+import { $api, $modelOptions, type ModelOptions } from "./state";
 
 export type ChatMessage = {
     role: string;
@@ -24,10 +19,7 @@ export async function streamChat(config: ChatConfig): Promise<ChatMessage> {
         endpoint = `${$api()}/chat`,
         model,
         messages = [],
-        options = {
-            num_ctx: 4096,
-            repeat_last_n: -1,
-        },
+        options = $modelOptions(),
         onChunk = () => {},
     } = config;
 
@@ -36,11 +28,7 @@ export async function streamChat(config: ChatConfig): Promise<ChatMessage> {
         body: JSON.stringify({
             model,
             messages,
-            options: {
-                num_ctx: 4096,
-                repeat_last_n: -1,
-                ...options,
-            },
+            options,
         }),
     });
 
