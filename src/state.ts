@@ -140,3 +140,10 @@ export const $modelOptions = isotope<ModelOptions>(persistentAtom('model-options
     top_k: 40,
     top_p: 0.9,
 }));
+
+export const $voices = isotope<SpeechSynthesisVoice[]>([]);
+speechSynthesis.addEventListener('voiceschanged', () => {
+    $voices(speechSynthesis.getVoices());
+});
+
+export const $voiceIndex = isotope(persistentAtom('voice-index', 0));
