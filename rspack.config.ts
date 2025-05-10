@@ -1,5 +1,5 @@
 import { defineConfig } from '@rspack/cli';
-import path from 'path';
+import path from 'node:path';
 
 export default defineConfig({
     mode: 'development',
@@ -20,7 +20,9 @@ export default defineConfig({
     },
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx'],
-        tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
+        tsConfig: {
+            configFile: path.resolve(__dirname, 'tsconfig.json'),
+        },
     },
     watchOptions: {
         ignored: /node_modules/,
@@ -53,7 +55,7 @@ export default defineConfig({
     devServer: {
         port: 3030,
         hot: true,
-        https: true,
+        server: "https",
         historyApiFallback: true,
     },
 });

@@ -1,13 +1,13 @@
 import { component, html, use } from "maki";
 import { $modelOptions } from "./state";
 
-component($ => {
+component(($) => {
     const modelOptions = use($modelOptions);
 
     return () => html`
     <div class="flex flex-col gap-2">
         <app-form-field label="mirostat">
-            <select value=${modelOptions().mirostat} @change=${(e) => modelOptions((opts) => ({ ...opts, mirostat: Number.parseInt(e.target.value) as (0 | 1 | 2) }))} class="p-2 rounded">
+            <select value=${modelOptions().mirostat} @change=${(e) => modelOptions((opts) => ({ ...opts, mirostat: Number.parseInt(e.target.value) as 0 | 1 | 2 }))} class="p-2 rounded">
                 <option value="0">0 - disabled</option>
                 <option value="1">1 - mirostat</option>
                 <option value="2">2 - mirostat 2.0</option>
@@ -104,4 +104,4 @@ component($ => {
         </app-form-field>
     </div>
     `;
-}).as('app-model-settings');
+}).as("app-model-settings");

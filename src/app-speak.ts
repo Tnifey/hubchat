@@ -21,14 +21,18 @@ component(() => {
     }
 
     return () => html`
-        <select value=${voiceIndex()} @change=${e => changeVoice(e.target.value)} class=${tw`max-w-[280px]`}>
-            ${repeat(voices(), (x) => x.name, (voice, i) => html`
+        <select value=${voiceIndex()} @change=${(e) => changeVoice(e.target.value)} class=${tw`max-w-[280px]`}>
+            ${repeat(
+                voices(),
+                (x) => x.name,
+                (voice, i) => html`
                 <option value=${i}>${voice.name}</option>
-            `)}
+            `,
+            )}
         </select>
 
         <button type="button" @click=${() => speak(text(), voices()[voiceIndex()])}>
             speak
         </button>
     `;
-}).as('app-speak');
+}).as("app-speak");

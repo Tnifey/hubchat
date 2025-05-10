@@ -3,7 +3,7 @@ import { isotope, persistentAtom } from "maki";
 const defaultApi = "http://localhost:11434/api";
 
 export const $api = isotope(defaultApi, (url) => {
-    if (typeof url === 'string' && url.trim()) return url.replace(/\/$/, "");
+    if (typeof url === "string" && url.trim()) return url.replace(/\/$/, "");
     return defaultApi;
 });
 export const $models = isotope<any[]>([]);
@@ -125,25 +125,27 @@ export type ModelOptions = {
     top_p?: number;
 };
 
-export const $modelOptions = isotope<ModelOptions>(persistentAtom('model-options', {
-    mirostat: 0,
-    mirostat_eta: 0.1,
-    mirostat_tau: 5.0,
-    num_ctx: 2048,
-    repeat_last_n: 64,
-    repeat_penalty: 1.1,
-    temperature: 0.8,
-    seed: 0,
-    stop: undefined,
-    tfs_z: 1,
-    num_predict: 128,
-    top_k: 40,
-    top_p: 0.9,
-}));
+export const $modelOptions = isotope<ModelOptions>(
+    persistentAtom("model-options", {
+        mirostat: 0,
+        mirostat_eta: 0.1,
+        mirostat_tau: 5.0,
+        num_ctx: 2048,
+        repeat_last_n: 64,
+        repeat_penalty: 1.1,
+        temperature: 0.8,
+        seed: 0,
+        stop: undefined,
+        tfs_z: 1,
+        num_predict: 128,
+        top_k: 40,
+        top_p: 0.9,
+    }),
+);
 
 export const $voices = isotope<SpeechSynthesisVoice[]>([]);
-speechSynthesis.addEventListener('voiceschanged', () => {
+speechSynthesis.addEventListener("voiceschanged", () => {
     $voices(speechSynthesis.getVoices());
 });
 
-export const $voiceIndex = isotope(persistentAtom('voice-index', 0));
+export const $voiceIndex = isotope(persistentAtom("voice-index", 0));

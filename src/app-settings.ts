@@ -7,17 +7,17 @@ component(() => {
     const isOpen = use(false);
     return () => html`
         <div class="relative inline-flex items-center justify-center h-full">
-            <button type="button" class="p-2 leading-4 rounded-md hover:bg-white hover:bg-opacity-5" @click=${() => isOpen(x => !x)}>
+            <button type="button" class="p-2 leading-4 rounded-md hover:bg-white hover:bg-opacity-5" @click=${() => isOpen((x) => !x)}>
                 ⚙
             </button>
             ${isOpen() ? html`<app-settings-modal @onclose=${() => isOpen(() => false)}></app-settings-modal>` : null}
         </div>
     `;
-}).as('app-settings');
+}).as("app-settings");
 
 component(($) => {
     function onClose() {
-        $.dispatchEvent(new CustomEvent('onclose', { bubbles: true }));
+        $.dispatchEvent(new CustomEvent("onclose", { bubbles: true }));
     }
 
     return () => html`
@@ -43,4 +43,4 @@ component(($) => {
             </div>
         </div>
     `;
-}).as('app-settings-modal');
+}).as("app-settings-modal");

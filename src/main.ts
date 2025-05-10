@@ -13,7 +13,7 @@ import "./app-speak";
 import { streamChat } from "./chat";
 
 component(() => {
-    const api = use($api)
+    const api = use($api);
     return () => {
         return html`
             <div class="grid w-full m-0 p-0 min-h-[100dvh]" style="grid-template-rows: auto 1fr;">

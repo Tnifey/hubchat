@@ -21,9 +21,9 @@ component(() => {
     `;
 }).as("app-model-responses");
 
-component<{ "data-role": string; }>(($) => {
+component<{ "data-role": string }>(($) => {
     function remove() {
-        const uuid = $.getAttribute('data-uuid');
+        const uuid = $.getAttribute("data-uuid");
         if (!uuid || !confirm("Are you sure you want to delete this response?")) return;
         $responses((responses) => responses.filter((x) => x.uuid !== uuid));
     }
