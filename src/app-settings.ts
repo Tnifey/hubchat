@@ -1,5 +1,5 @@
 import { component, html, tw, use } from "maki";
-import { $api } from "./state";
+import { $api, $raw } from "./state";
 
 import "./app-model-settings";
 
@@ -20,6 +20,8 @@ component(($) => {
         $.dispatchEvent(new CustomEvent("onclose", { bubbles: true }));
     }
 
+    const raw = use($raw);
+
     return () => html`
         <div class=${tw`absolute top-0 right-0 bg-black z-[99999] rounded-md min-w-[320px] max-h-[80dvh] border-solid border-1 border-white border-opacity-20 overflow-y-auto`}>
             <header class="flex gap-4 p-2 items-center border-b-solid border-b-1 border-white border-b-opacity-20 sticky top-0 left-0 right-0 bg-black">
@@ -39,6 +41,13 @@ component(($) => {
                         value=${$api()}
                         @change=${(e) => $api(() => e.target.value.trim())}></app-text-input>
                 </app-form-field>
+                <div>
+                    <button class="bg-white bg-opacity-5 hover:bg-white hover:bg-opacity-5 p-2 leading-4 rounded-md"
+                        @click=${() => $raw((x) => !x)}
+                        type="button">
+                        ${raw() ? "Disable raw response" : "Enable raw response"}
+                    </button>
+                </div>
                 <app-model-settings></app-model-settings>
             </div>
         </div>

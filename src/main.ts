@@ -78,10 +78,7 @@ component(() => {
                 messages: $responses().map(({ role, content }) => ({ role, content })),
                 onChunk(chunk) {
                     content((current) => `${current}${chunk}`);
-                    recent &&
-                        window.scrollTo({
-                            top: recent.offsetTop + recent.offsetHeight,
-                        });
+                    recent && window.scrollTo({ top: recent.offsetTop });
                 },
             });
             message?.content?.trim() &&
@@ -108,19 +105,11 @@ component(() => {
 
     return () => html`
         <div class=${tw`grid min-h-full grid-template-rows-[1fr,auto]`} style="grid-template-rows: 1fr auto;">
-            <app-model-responses class="p-4">
-                ${
-                    content()
-                        ? html`<app-model-response data-role="assistant" ref=${ref(
-                              (x: HTMLElement) => {
-                                  recent = x;
-                                  return recent;
-                              },
-                          )}>
-                    <zero-markdown content=${content()}></zero-markdown>
-                </app-model-response>`
-                        : null
-                }
+            <app-model-responses>
+                ${!content() ? null : html`<app-model-response data-role="assistant">
+                    <app-response-content value="${content()}"></app-response-content>
+                </app-model-response>`}
+                <div ref=${ref((x: HTMLElement) => { recent = x; return recent; })}></div>
             </app-model-responses>
             <form class="flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30 bg-[#121212]" @submit=${onSubmit}>
                 <iron-autogrow-textarea type="text"

@@ -9,6 +9,8 @@ export const $api = isotope(defaultApi, (url) => {
 export const $models = isotope<any[]>([]);
 export const $model = isotope(persistentAtom("model", ""));
 export const $role = isotope(persistentAtom("role", "user"));
+export const $raw = isotope(persistentAtom("raw", false));
+
 
 fetch(`${$api()}/tags`)
     .then((response) => response.json())

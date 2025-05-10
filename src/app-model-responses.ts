@@ -1,18 +1,27 @@
 import { repeat } from "lit-html/directives/repeat.js";
 import { component, html, tw, use } from "maki";
 import "./markdown";
-import { $responses } from "./state";
+import { $raw, $responses } from "./state";
+
+component<{ value: string; }>(() => {
+    const raw = use($raw);
+    return ($) => {
+        if (raw()) return html`<pre class="text-wrap max-w-full whitespace-pre-wrap text-stable">${$.value}</pre>`;
+        return html`<zero-markdown content=${$.value}></zero-markdown>`;
+    };
+}).as('app-response-content');
 
 component(() => {
     const responses = use($responses);
+
     return () => html`
-        <div class="flex flex-col gap-4 overflow-auto">
+        <div class="flex flex-col gap-4 overflow-auto p-6">
             ${repeat(
                 responses(),
                 (x) => x.uuid,
                 (response) => html`
                 <app-model-response data-role=${response.role} data-uuid=${response.uuid}>
-                    <zero-markdown content=${response.content}></zero-markdown>
+                    <app-response-content value="${response.content}"></app-response-content>
                 </app-model-response>
             `,
             )}
